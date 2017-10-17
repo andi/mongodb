@@ -1,0 +1,18 @@
+version: '2'
+services:
+  app: 
+    build: 
+      context: .
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - './app:/app'
+    ports: 
+      - "8080:8080"
+    links:
+      - db
+  db:
+    image: mongo:3.4
+    volumes:
+      - mongodb:/data/db
+volumes:
+  mongodb:
