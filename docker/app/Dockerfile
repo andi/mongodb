@@ -7,6 +7,7 @@ RUN  apt-get update && apt-get install -y nano wget curl dialog net-tools python
 RUN pip install bottle
 RUN pip install gunicorn
 RUN pip install gevent
+RUN pip install pymongo
 
 EXPOSE 8080
 
