@@ -54,6 +54,7 @@ class UserDAO:
         user = None
         try:
             user = self.users.find_one({'_id': username})
+            # you will need to retrieve right document from the users collection.
         except:
             print "Unable to query database for user"
 
@@ -80,7 +81,11 @@ class UserDAO:
             user['email'] = email
 
         try:
+            # XXX HW 2.3 Students work here
+            # You need to insert the user into the users collection.
+            # Don't over think this one, it's a straight forward insert.
             self.users.insert_one(user)
+
         except pymongo.errors.OperationFailure:
             print "oops, mongo error"
             return False
