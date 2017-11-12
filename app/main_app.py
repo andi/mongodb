@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 #
 # Copyright (c) 2008 - 2013 10gen, Inc. <http://10gen.com>
 #
@@ -32,7 +32,6 @@ __author__ = 'aje'
 
 app = bottle.app()
 
-
 # General Discussion on structure. This program implements a blog. This file is the best place to start to get
 # to know the code. In this file, which is the controller, we define a bunch of HTTP routes that are handled
 # by functions. The basic way that this magic occurs is through the decorator design pattern. Decorators
@@ -51,6 +50,20 @@ def blog_index():
 
     # even if there is no logged in user, we can show the blog
     l = posts.get_posts(10)
+
+    return bottle.template('blog_template', dict(myposts=l, username=username))
+
+# The main page of the blog, filtered by tag
+@bottle.route('/tag/<tag>')
+def posts_by_tag(tag="notfound"):
+
+    cookie = bottle.request.get_cookie("session")
+    tag = cgi.escape(tag)
+
+    username = sessions.get_username(cookie)
+
+    # even if there is no logged in user, we can show the blog
+    l = posts.get_posts_by_tag(tag, 10)
 
     return bottle.template('blog_template', dict(myposts=l, username=username))
 
@@ -111,7 +124,6 @@ def post_new_comment():
         posts.add_comment(permalink, name, email, body)
 
         bottle.redirect("/post/" + permalink)
-
 
 @bottle.get("/post_not_found")
 def post_not_found():
@@ -328,9 +340,8 @@ posts = blogPostDAO.BlogPostDAO(database)
 users = userDAO.UserDAO(database)
 sessions = sessionDAO.SessionDAO(database)
 
+
 if __name__=='__main__':
     bottle.debug(True)
     bottle.run(reloader=True,app=app,host='localhost',port=8080)
-
-
 
